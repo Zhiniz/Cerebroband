@@ -1,99 +1,162 @@
 # Cerebroband
-CerebroBand — Wearable Stroke Risk Detection Device (Without ECG)
-1️⃣ Overall System Architecture
-The system operates according to the following structure:
-Sensors → ESP32 → Data Analysis Algorithm → Bluetooth/Wi-Fi → Cloud → Dashboard + SOS
-The device:
-Continuously collects physiological data
-Processes it locally (edge processing)
-Detects abnormalities
-Transmits data to the mobile application
-Activates emergency alerts in critical situations
-2️⃣ Sensors Used
-❤️ 1. PPG Sensor for Heart Rate and SpO₂
-Component: MAX30102
-Measures:
-Heart rate (BPM)
-Heart rate variability (HRV)
-Blood oxygen saturation (SpO₂)
-How it works:
-The system uses photoplethysmography (PPG).
-Red and infrared light pass through body tissues, and a photodiode measures the reflected signal.
-Changes in light absorption allow calculation of pulse and oxygen saturation.
-Why ECG is not required:
-Even without ECG, the system can detect:
-Irregular heart rhythm
-Suspected atrial fibrillation
-Tachycardia / bradycardia
-Sudden drops in SpO₂
-The algorithm analyzes peak-to-peak intervals in the signal.
-🏃 2. Accelerometer + Gyroscope
-Component: MPU6050
-Measures:
-3-axis acceleration
-Rotation and orientation
-Used for:
-Fall detection
-Detecting sudden loss of balance
-Identifying prolonged immobility after impact
-The algorithm detects:
-Sudden acceleration spike
-Transition to horizontal position
-No movement for a defined time threshold
-🌡 3. Body Temperature Sensor
-Built-in temperature sensor or MLX90614.
-Purpose:
-Monitoring general physical condition
-Additional parameter for risk analysis
-📍 4. GPS Module
-Component: Neo-6M
-Purpose:
-Sending coordinates during SOS
-Sharing location with relatives
-Confirming immobility
-3️⃣ Central Controller
-💻 ESP32 Microcontroller
-Why ESP32 was selected:
-Built-in Wi-Fi
-Built-in Bluetooth
-Low power consumption
-Sufficient processing power
-Compact size
-ESP32:
-Reads sensor data
-Filters signal noise
-Calculates beat-to-beat intervals
-Detects abnormalities
-Sends data to the cloud
-4️⃣ Stroke Risk Detection Logic
-Since there is no ECG sensor, detection is based on:
-📊 1. Heart Rhythm Irregularity
-Unstable beat intervals may indicate atrial fibrillation.
-📉 2. Sudden SpO₂ Decrease
-SpO₂ < 90% indicates possible hypoxia.
-🚨 3. Combined Risk Logic
-Emergency alert is triggered if:
-Irregular rhythm + tachycardia
-Fall detected + abnormal heart rate
-Long immobility + sudden HR spike
-Critically low SpO₂
-5️⃣ Emergency Alert System
-In critical situations:
-Buzzer activates
-LED indicator flashes
-Notification is sent via mobile app
-GPS coordinates are transmitted
-SOS mode is activated
-A physical emergency button is also included.
-6️⃣ Power System
-3.7V Li-Po battery
-TP4056 charging module
-Over-discharge protection
-24–36 hours battery life
-7️⃣ How CerebroBand Differs from Regular Wearables
-Most fitness devices (such as Apple Watch) focus primarily on activity tracking.
-CerebroBand:
-Functions as a preventive medical system
-Analyzes heart rhythm patterns
-Combines heart rate + SpO₂ + motion data
-Automatically activates emergency alerts
+<h1>🧠 CerebroBand — Wearable Stroke Risk Detection Device (Without ECG)</h1>
+
+<h2>1️⃣ Overall System Architecture</h2>
+
+<p><strong>System Flow:</strong></p>
+<p><code>Sensors → ESP32 → Data Analysis Algorithm → Bluetooth/Wi-Fi → Cloud → Dashboard + SOS</code></p>
+
+<ul>
+  <li>Continuously collects physiological data</li>
+  <li>Processes data locally (edge processing)</li>
+  <li>Detects abnormalities</li>
+  <li>Transmits data to mobile application</li>
+  <li>Activates emergency alerts in critical situations</li>
+</ul>
+
+<hr>
+
+<h2>2️⃣ Sensors Used</h2>
+
+<h3>❤️ PPG Sensor (Heart Rate + SpO₂)</h3>
+
+<p><strong>Component:</strong> MAX30102</p>
+
+<p><strong>Measures:</strong></p>
+<ul>
+  <li>Heart Rate (BPM)</li>
+  <li>Heart Rate Variability (HRV)</li>
+  <li>Blood Oxygen Saturation (SpO₂)</li>
+</ul>
+
+<p><strong>How it works:</strong></p>
+<p>
+Uses photoplethysmography (PPG). Red and infrared light pass through tissue,
+and a photodiode measures reflected light. Signal variations determine pulse and oxygen level.
+</p>
+
+<p><strong>Detects:</strong></p>
+<ul>
+  <li>Irregular rhythm</li>
+  <li>Suspected atrial fibrillation</li>
+  <li>Tachycardia / Bradycardia</li>
+  <li>Sudden SpO₂ drops</li>
+</ul>
+
+<hr>
+
+<h3>🏃 Accelerometer + Gyroscope</h3>
+
+<p><strong>Component:</strong> MPU6050</p>
+
+<p><strong>Measures:</strong></p>
+<ul>
+  <li>3-axis acceleration</li>
+  <li>Orientation and rotation</li>
+</ul>
+
+<p><strong>Used for:</strong></p>
+<ul>
+  <li>Fall detection</li>
+  <li>Sudden loss of balance</li>
+  <li>Immobility detection</li>
+</ul>
+
+<hr>
+
+<h3>🌡 Temperature Sensor</h3>
+
+<p><strong>Component:</strong> Built-in sensor or MLX90614</p>
+
+<ul>
+  <li>Monitors general condition</li>
+  <li>Provides additional health parameter</li>
+</ul>
+
+<hr>
+
+<h3>📍 GPS Module</h3>
+
+<p><strong>Component:</strong> Neo-6M</p>
+
+<ul>
+  <li>Sends coordinates during SOS</li>
+  <li>Shares location with relatives</li>
+  <li>Confirms immobility</li>
+</ul>
+
+<hr>
+
+<h2>3️⃣ Central Controller</h2>
+
+<h3>💻 ESP32 Microcontroller</h3>
+
+<p><strong>Why ESP32:</strong></p>
+<ul>
+  <li>Built-in Wi-Fi</li>
+  <li>Built-in Bluetooth</li>
+  <li>Low power consumption</li>
+  <li>Compact size</li>
+  <li>Real-time processing capability</li>
+</ul>
+
+<p><strong>Functions:</strong></p>
+<ul>
+  <li>Reads sensor data</li>
+  <li>Filters noise</li>
+  <li>Calculates beat intervals</li>
+  <li>Detects abnormalities</li>
+  <li>Sends data to cloud</li>
+</ul>
+
+<hr>
+
+<h2>4️⃣ Stroke Risk Detection Logic</h2>
+
+<h3>📊 Heart Rhythm Irregularity</h3>
+<p>Unstable beat intervals may indicate atrial fibrillation.</p>
+
+<h3>📉 SpO₂ Drop</h3>
+<p>SpO₂ below 90% may indicate hypoxia.</p>
+
+<h3>🚨 Combined Risk Logic</h3>
+<ul>
+  <li>Irregular rhythm + tachycardia</li>
+  <li>Fall detected + abnormal heart rate</li>
+  <li>Long immobility + sudden HR spike</li>
+  <li>Critically low SpO₂</li>
+</ul>
+
+<hr>
+
+<h2>5️⃣ Emergency Alert System</h2>
+
+<ul>
+  <li>Buzzer activation</li>
+  <li>LED flashing indicator</li>
+  <li>Mobile app notification</li>
+  <li>GPS coordinates transmission</li>
+  <li>Physical SOS button</li>
+</ul>
+
+<hr>
+
+<h2>6️⃣ Power System</h2>
+
+<ul>
+  <li>3.7V Li-Po Battery</li>
+  <li>TP4056 Charging Module</li>
+  <li>Over-discharge protection</li>
+  <li>24–36 hours battery life</li>
+</ul>
+
+<hr>
+
+<h2>7️⃣ Key Advantages</h2>
+
+<ul>
+  <li>Preventive medical monitoring</li>
+  <li>Real-time abnormality detection</li>
+  <li>Multi-sensor data fusion</li>
+  <li>Automatic emergency activation</li>
+</ul>
